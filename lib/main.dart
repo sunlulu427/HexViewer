@@ -1,7 +1,6 @@
-import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
-import 'dart:io';
-import 'dart:typed_data';
+import 'package:hex_viewer/hex_formatter.dart';
+import 'package:hex_viewer/pick_file.dart';
 
 void main() {
   runApp(const HexViewerApp());
@@ -30,30 +29,17 @@ class _HexViewerPageState extends State<HexViewerPage> {
   String fileContent = '';
 
   Future<void> _pickFile() async {
-    FilePickerResult? result = await FilePicker.platform.pickFiles();
-    if (result != null) {
-      File file = File(result.files.single.path!);
-      Uint8List bytes = await file.readAsBytes();
-      setState(() {
-        fileContent = _formatHexView(bytes);
-      });
-    }
-  }
-
-  String _formatHexView(Uint8List bytes) {
-    StringBuffer buffer = StringBuffer();
-    for (int i = 0; i < bytes.length; i += 16) {
-      buffer.write("${i.toRadixString(16).padLeft(8, '0')}: ");
-      for (int j = 0; j < 16; ++j) {
-        if (i + j < bytes.length) {
-          buffer.write("${bytes[i + j].toRadixString(16).padLeft(2, '0')} ");
-        } else {
-          buffer.write("  ");
-        }
-      }
-      buffer.write("\n");
-    }
-    return buffer.toString();
+    pickFile(PickFileCallback(
+      onBytesReaded: (bytes) => {
+        setState(() {
+          fileContent = formatHexView(bytes);
+        })
+      },
+      onError: (message) {
+        ScaffoldMessenger.of(context)
+            .showSnackBar(SnackBar(content: Text(message)));
+      },
+    ));
   }
 
   @override
@@ -70,7 +56,9 @@ class _HexViewerPageState extends State<HexViewerPage> {
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16),
-        child: Text(fileContent.isNotEmpty ? fileContent : "No file selected"),
+        child: Text(
+          fileContent.isNotEmpty ? fileContent : "No file selected",
+        ),
       ),
     );
   }
