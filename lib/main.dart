@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:hex_viewer/hex_formatter.dart';
 import 'package:hex_viewer/pick_file.dart';
+import 'package:hex_viewer/widgets/file_viewer.dart';
 
 void main() {
   runApp(const HexViewerApp());
@@ -54,12 +55,7 @@ class _HexViewerPageState extends State<HexViewerPage> {
           )
         ],
       ),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(16),
-        child: Text(
-          fileContent.isNotEmpty ? fileContent : "No file selected",
-        ),
-      ),
+      body: FileViewer(content: fileContent)
     );
   }
 }
