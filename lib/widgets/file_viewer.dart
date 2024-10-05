@@ -7,19 +7,22 @@ class FileViewer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ListView.builder(
-      itemCount: lines.length,
-      itemBuilder: (context, index) {
-        return Padding(
-          padding: const EdgeInsets.all(8),
-          child: Text(
-            lines[index],
-            style: const TextStyle(
-              fontFamily: 'monospace',
+    return Container(
+      padding: const EdgeInsets.only(left: 100),
+      child: ListView.builder(
+        itemCount: lines.length,
+        itemBuilder: (context, index) {
+          return Padding(
+            padding: const EdgeInsets.all(8),
+            child: Text(
+              lines[index],
+              style: const TextStyle(
+                fontSize: 20,
+              ),
             ),
-          ),
-        );
-      },
+          );
+        },
+      ),
     );
   }
 }
